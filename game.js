@@ -11,7 +11,7 @@ class Game {
   /** Points for each piece of junk delivered to the Mothership. */
   static SCORE_DROPOFF = 100;
   /** The one level in this version of the game. Time is in ms. */
-  static LEVEL = { name: "Training", junk: 5, time: 120000 };
+  static LEVEL = { name: "Training", junk: 2, time: 120000 };
 
   /** Number of lives remaining */
   lives;
@@ -79,11 +79,11 @@ class Game {
     const junk = this.resolveBeam(delta);
     if (junk) {
       this.magpie.captureJunk(junk);
-      this.level.removeJunk(junk);
     }
-
+    
     if (this.resolveDropoff(delta)) {
-      this.magpie.capturedJunk = null; // delivered, so it disappears
+      this.level.removeJunk(this.magpie.capturedJunk);
+      this.magpie.capturedJunk = null;
       this.updateScore("dropoff");
     }
   }
@@ -129,6 +129,15 @@ class Game {
     // Mothership, add delta to its dropoffTime. Otherwise, drain its
     // dropoffTime by delta, but not below zero. Return true when dropoffTime
     // is more than Game.JUNK_DROPOFF_TIME_MS.
+    if (this.magpie.capturedJunk != null) {
+      let distance = dist(this.mothership.physics.x, this.mothership.physics.y, this.magpie.capturedJunk.physics.x, this.magpie.capturedJunk.physics.y);
+      if (distance <= Mothership.PICKUP_DIAMETER / 2) {
+        this.magpie.capturedJunk.dropoffTime += delta;
+      } else {
+        this.magpie.capturedJunk.dropoffTime = Math.max(0, this.magpie.capturedJunk.dropoffTime - delta);
+      }
+      return this.magpie.capturedJunk.dropoffTime > Game.JUNK_DROPOFF_TIME_MS;
+    }
     return false;
   }
 
@@ -160,6 +169,10 @@ class Game {
   updateScore(reason) {
     // TODO (Phase 4): When the reason is "dropoff", add Game.SCORE_DROPOFF
     // to the score.
+    if (reason === "dropoff") {
+      this.score += Game.SCORE_DROPOFF;
+    }
+
   }
 
   isLevelComplete() {

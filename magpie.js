@@ -46,7 +46,7 @@ class Magpie {
     // beam off.
     this.capturedJunk = junk // This will set capturedJunk to be the junk that was just passed in (will collect one junk max --> push the junk instead of setting it to collect multiple)
     this.enableBeam(false)
-    this.capturedJunk = null // delete this line when handling capturedJunk
+    // this.capturedJunk = null // delete this line when handling capturedJunk
   }
 
   // this method is static. That means it doesn't use `this` to gain access to
@@ -146,8 +146,8 @@ class Magpie {
     if (v === false) {
       this.beam = v;
     }
-    // if (!this.capturedJunk) {
-      this.beam = v; // restore this if only allowed to capture one junk at a time
-    // }
+    if (!this.capturedJunk) {
+      this.beam = v;
+    }
   }
 }
