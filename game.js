@@ -11,7 +11,7 @@ class Game {
   /** Points for each piece of junk delivered to the Mothership. */
   static SCORE_DROPOFF = 100;
   /** The one level in this version of the game. Time is in ms. */
-  static LEVEL = { name: "Training", junk: 2, time: 120000 };
+  static LEVEL = { name: "Training", junk: 5, time: 120000 };
 
   /** Number of lives remaining */
   lives;
